@@ -9,26 +9,37 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-// Use path.join to find arcade.html relative to this file
 const arcadePath = path.join(__dirname, "arcade.html");
-const arcadeContent = fs.readFileSync(arcadePath, "utf8");
 
 const mmlDocument = new EditableNetworkedDOM(
   "http://localhost/arcade.html",
-  () => arcadeContent
+  () => fs.readFileSync(arcadePath, "utf8")
 );
 
-// Handle WebSocket connections
 wss.on("connection", (ws) => {
   console.log("Client connected");
   mmlDocument.addWebSocket(ws);
+
+  ws.on("message", (data) => {
+    try {
+      const msg = JSON.parse(data);
+      if (msg.type === "custom" && msg.name === "launch-game") {
+        // Send launch command back to this specific client
+        ws.send(JSON.stringify({
+          type: "custom",
+          name: "launch-game",
+          detail: msg.detail
+        }));
+      }
+    } catch (e) {}
+  });
+
   ws.on("close", () => {
     console.log("Client disconnected");
     mmlDocument.removeWebSocket(ws);
   });
 });
 
-// Health check
 app.get("/", (req, res) => {
   res.send("MML Arcade Server is running!");
 });
