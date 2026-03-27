@@ -30,6 +30,15 @@ app.get("/", (req, res) => {
   res.send("MML Arcade Server is running!");
 });
 
+// CORS middleware for ROM endpoint only
+app.use("/rom", (req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://jdunk4.github.io");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.sendStatus(200);
+  next();
+});
+
 // Protected ROM endpoint
 app.get("/rom/:filename", (req, res) => {
   const secret = req.query.token;
@@ -47,7 +56,6 @@ app.get("/rom/:filename", (req, res) => {
   }
 
   console.log(`Serving ROM: ${filename}`);
-  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Content-Type", "application/octet-stream");
   res.sendFile(romPath);
 });
