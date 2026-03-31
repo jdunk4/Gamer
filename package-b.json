@@ -1,15 +1,14 @@
 {
-  "name": "mml-nes-streaming-server",
+  "name": "mml-snes-streaming-server",
   "version": "1.0.0",
-  "description": "Server-side NES emulator streaming frames via WebSocket — Path B",
+  "description": "Puppeteer streams headless Chrome running EmulatorJS — Path B",
   "main": "server-b.js",
   "scripts": {
     "start": "node server-b.js"
   },
   "dependencies": {
-    "canvas": "^2.11.2",
     "express": "latest",
-    "jsnes": "latest",
+    "puppeteer": "latest",
     "ws": "latest"
   },
   "engines": {
