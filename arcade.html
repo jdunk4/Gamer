@@ -40,7 +40,7 @@
   <!-- Info Card (shown on proximity) -->
   <m-image
     id="info-card"
-    src="https://jdunk4.github.io/Gamer/KMW1 - Info Card.png"
+    src="https://jdunk4.github.io/Gamer/KMW1%20-%20Info%20Card.png"
     width="1.2"
     height="0.8"
     y="3.1"
@@ -57,27 +57,21 @@
   <script>
     var gameActive = false;
 
-    // Wait for DOM elements to be ready before binding
-    window.addEventListener('load', function () {
+    // In MML, scripts run directly in the networked DOM context — no window.load needed
+    var interact = document.getElementById('interact');
+    var probe = document.getElementById('probe');
 
-      var interact = document.getElementById('interact');
-      var probe = document.getElementById('probe');
+    interact.addEventListener('activate', function() {
+      toggleGame();
+    });
 
-      if (interact) {
-        interact.addEventListener('activate', function () {
-          toggleGame();
-        });
-      }
+    probe.addEventListener('positionenter', function() {
+      document.getElementById('info-card').setAttribute('visible', 'true');
+    });
 
-      if (probe) {
-        probe.addEventListener('positionenter', function () {
-          document.getElementById('info-card').setAttribute('visible', 'true');
-        });
-        probe.addEventListener('positionleave', function () {
-          document.getElementById('info-card').setAttribute('visible', 'false');
-          closeGame();
-        });
-      }
+    probe.addEventListener('positionleave', function() {
+      document.getElementById('info-card').setAttribute('visible', 'false');
+      closeGame();
     });
 
     function toggleGame() {
