@@ -16,7 +16,7 @@
   <m-sphere radius="0.045" y="1.07" z="0.05" x="0.15" color="#e8000d"></m-sphere>
   <m-sphere radius="0.045" y="1.07" z="0.05" x="0.28" color="#ffcc00"></m-sphere>
 
-  <!-- Game Screen: preview image shown when idle -->
+  <!-- Game Screen preview (shown when idle) -->
   <m-image
     id="screen-preview"
     src="https://jdunk4.github.io/Gamer/SMW%20-%20Kaizo%20Mario%20World%201.png"
@@ -26,7 +26,7 @@
     z="0.46">
   </m-image>
 
-  <!-- Game Frame: loads game.html on press E (hidden until activated) -->
+  <!-- Game Frame (hidden until E pressed) -->
   <m-frame
     id="game-frame"
     src=""
@@ -37,7 +37,7 @@
     visible="false">
   </m-frame>
 
-  <!-- Info Card: floats above cabinet on approach -->
+  <!-- Info Card (shown on proximity) -->
   <m-image
     id="info-card"
     src="https://jdunk4.github.io/Gamer/kaizomarioworld1-info-card.png"
@@ -48,23 +48,37 @@
     visible="false">
   </m-image>
 
-  <!-- Proximity probe: show info card when player within 3m -->
-  <m-position-probe
-    id="probe"
-    range="3.0"
-    onpositionenter="document.getElementById('info-card').setAttribute('visible','true')"
-    onpositionleave="document.getElementById('info-card').setAttribute('visible','false'); closeGame()">
-  </m-position-probe>
+  <!-- Proximity probe -->
+  <m-position-probe id="probe" range="3.0"></m-position-probe>
 
-  <!-- Interaction: Press E logic -->
-  <m-interaction
-    prompt="Press E to Play"
-    range="2.5"
-    onactivate="toggleGame()">
-  </m-interaction>
+  <!-- Interaction trigger -->
+  <m-interaction id="interact" prompt="Press E to Play" range="2.5"></m-interaction>
 
   <script>
     var gameActive = false;
+
+    // Wait for DOM elements to be ready before binding
+    window.addEventListener('load', function () {
+
+      var interact = document.getElementById('interact');
+      var probe = document.getElementById('probe');
+
+      if (interact) {
+        interact.addEventListener('activate', function () {
+          toggleGame();
+        });
+      }
+
+      if (probe) {
+        probe.addEventListener('positionenter', function () {
+          document.getElementById('info-card').setAttribute('visible', 'true');
+        });
+        probe.addEventListener('positionleave', function () {
+          document.getElementById('info-card').setAttribute('visible', 'false');
+          closeGame();
+        });
+      }
+    });
 
     function toggleGame() {
       if (gameActive) {
@@ -76,23 +90,18 @@
 
     function launchGame() {
       gameActive = true;
-      var frame = document.getElementById('game-frame');
-      var preview = document.getElementById('screen-preview');
-      frame.setAttribute('src', 'https://jdunk4.github.io/Gamer/game.html');
-      frame.setAttribute('visible', 'true');
-      preview.setAttribute('visible', 'false');
+      document.getElementById('game-frame').setAttribute('src', 'https://jdunk4.github.io/Gamer/game.html');
+      document.getElementById('game-frame').setAttribute('visible', 'true');
+      document.getElementById('screen-preview').setAttribute('visible', 'false');
     }
 
     function closeGame() {
       if (!gameActive) return;
       gameActive = false;
-      var frame = document.getElementById('game-frame');
-      var preview = document.getElementById('screen-preview');
-      frame.setAttribute('src', '');
-      frame.setAttribute('visible', 'false');
-      preview.setAttribute('visible', 'true');
+      document.getElementById('game-frame').setAttribute('src', '');
+      document.getElementById('game-frame').setAttribute('visible', 'false');
+      document.getElementById('screen-preview').setAttribute('visible', 'true');
     }
   </script>
 
 </m-group>
-
