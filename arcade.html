@@ -66,17 +66,20 @@
   <!-- Completion Counter -->
   <m-label id="completion-label" content="0 players completed" y="0.52" z="0.42" width="0.9" height="0.1" font-size="10" color="#aaaaff" alignment="center"></m-label>
 
-  <!-- Info Card — positioned to the right at screen level -->
+  <!-- Info Card -->
   <m-image id="info-card" src="https://jdunk4.github.io/ARCADE1/KMW1%20-%20Info%20Card.png" width="1.4" height="1.0" x="1.4" y="1.5" z="0.46" ry="-15" visible="false">
   </m-image>
 
   <!-- Position Probe -->
   <m-position-probe range="4.0" id="probe"></m-position-probe>
 
-  <!-- m-link wraps the interaction — MML-native navigation, not blocked by sandbox -->
+  <!-- Interaction -->
+  <m-interaction id="play-btn" prompt="Press E to Play Kaizo Mario World" range="4.0" y="1.1">
+  </m-interaction>
+
+  <!-- Hidden m-link — triggered programmatically on interact -->
   <m-link id="game-link" href="https://jdunk4.github.io/ARCADE1/game.html" target="_blank">
-    <m-interaction id="play-btn" prompt="Press E to Play Kaizo Mario World" range="4.0" y="1.1">
-    </m-interaction>
+    <m-cube id="link-trigger" width="0.001" height="0.001" depth="0.001" y="-999" color="#000000"></m-cube>
   </m-link>
 
   <script>
@@ -94,10 +97,17 @@
     const probe = document.getElementById("probe");
     const card = document.getElementById("info-card");
     const compLabel = document.getElementById("completion-label");
+    const playBtn = document.getElementById("play-btn");
     const gameLink = document.getElementById("game-link");
+    const linkTrigger = document.getElementById("link-trigger");
 
-    // ── Inject wallet + rom into link href ───────────────────────────────
+    // ── Set URL with wallet + rom params ─────────────────────────────────
     gameLink.setAttribute("href", GAME_URL + "?rom=" + ROM_ID + "&wallet=" + WALLET);
+
+    // ── Press E → click the hidden m-link cube ───────────────────────────
+    playBtn.addEventListener("interact", function() {
+      linkTrigger.click();
+    });
 
     // ── Proximity ───────────────────────────────────────────────────────
     probe.addEventListener("positionenter", function() {
