@@ -1,4 +1,4 @@
- <m-group>
+<m-group>
 
   <!-- Cabinet Body -->
   <m-cube width="1.2" height="2.2" depth="0.8" y="1.1" color="#1a1a2e"></m-cube>
@@ -73,8 +73,11 @@
   <!-- Position Probe -->
   <m-position-probe range="4.0" id="probe"></m-position-probe>
 
-  <!-- Interaction -->
-  <m-interaction id="play-btn" prompt="Press E to Play Kaizo Mario World" range="4.0" y="1.1"></m-interaction>
+  <!-- m-link wraps the interaction — MML-native navigation, not blocked by sandbox -->
+  <m-link id="game-link" href="https://jdunk4.github.io/ARCADE1/game.html" target="_blank">
+    <m-interaction id="play-btn" prompt="Press E to Play Kaizo Mario World" range="4.0" y="1.1">
+    </m-interaction>
+  </m-link>
 
   <script>
     // ── Config ──────────────────────────────────────────────────────────
@@ -91,7 +94,10 @@
     const probe = document.getElementById("probe");
     const card = document.getElementById("info-card");
     const compLabel = document.getElementById("completion-label");
-    const playBtn = document.getElementById("play-btn");
+    const gameLink = document.getElementById("game-link");
+
+    // ── Inject wallet + rom into link href ───────────────────────────────
+    gameLink.setAttribute("href", GAME_URL + "?rom=" + ROM_ID + "&wallet=" + WALLET);
 
     // ── Proximity ───────────────────────────────────────────────────────
     probe.addEventListener("positionenter", function() {
@@ -99,12 +105,6 @@
     });
     probe.addEventListener("positionleave", function() {
       card.setAttribute("visible", "false");
-    });
-
-    // ── Interaction ─────────────────────────────────────────────────────
-    playBtn.addEventListener("interact", function() {
-      var url = GAME_URL + "?rom=" + ROM_ID + "&wallet=" + WALLET;
-      window.open(url, "_blank");
     });
 
     // ── Completion Count ─────────────────────────────────────────────────
